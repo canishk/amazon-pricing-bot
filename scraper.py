@@ -57,9 +57,9 @@ async def check_prices():
         if new_price < last_known_price or last_known_price is None:
             await update_price(asin, new_price)
             if last_known_price is None:
-                message = f"The product with ASIN {asin} is now available at ₹{new_price}."
+                message = f"The product https://www.amazon.in/dp/{asin} is now available at ₹{new_price}."
             else:
-                message = f"The price of the product with ASIN {asin} has reduced to ₹{new_price}."
+                message = f"The price of the product https://www.amazon.in/dp/{asin} has reduced to ₹{new_price}."
             logging.info(f"User {user_id} - ASIN {asin} - Last known price: {last_known_price}, New price: {new_price}")
             await bot.send_message(chat_id=telegram_id, text=message)
 
