@@ -4,7 +4,7 @@ import logging
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
 from telegram import Bot
-from db import get_all_tracked, update_price, get_telegram_id
+from db import get_all_tracked, update_price
 from config import TELEGRAM_BOT_TOKEN
 
 logging.basicConfig(
@@ -45,9 +45,9 @@ async def check_prices():
         return
     logging.info(f"Tracked products: {tracked_products}")
     for user_id, asin, last_known_price in tracked_products:
+        message = ""
         logging.info(f"User {user_id} - ASIN {asin} - Last known price: {last_known_price}")
-        telegram_id = user_id
-        if telegram_id is None:
+        if user_id is None:
             continue
         new_price = await get_amazon_price(asin)
         logging.info(new_price)
@@ -60,8 +60,12 @@ async def check_prices():
                 message = f"The product https://www.amazon.in/dp/{asin} is now available at ₹{new_price}."
             else:
                 message = f"The price of the product https://www.amazon.in/dp/{asin} has reduced to ₹{new_price}."
-            logging.info(f"User {user_id} - ASIN {asin} - Last known price: {last_known_price}, New price: {new_price}")
-            await bot.send_message(chat_id=telegram_id, text=message)
+        elif new_price > last_known_price:
+            message = f"The price of the product https://www.amazon.in/dp/{asin} has increased to ₹{new_price}."
+        logging.info(f"User {user_id} - ASIN {asin} - Last known price: {last_known_price}, New price: {new_price}")
+        if message !="":
+            logging.info(f"Sending message to user {user_id}: {message}")
+            await bot.send_message(chat_id=user_id, text=message)
 
 if __name__ == "__main__":
     asyncio.run(check_prices())
