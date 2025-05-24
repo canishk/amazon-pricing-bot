@@ -1,9 +1,7 @@
 import os
 from dotenv import load_dotenv
 
-class Config:
-    def __init__(self, env_path=".env"):
-        load_dotenv(env_path)
+load_dotenv()
 
-    def get(self, key, default=None):
-        return os.getenv(key, default)
+TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+DB_FILE = os.getenv("DB_FILE", "db.sqlite")
