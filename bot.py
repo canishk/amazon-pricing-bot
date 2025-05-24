@@ -42,7 +42,7 @@ async def track(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # Add the product to the database
     await db.add_product(telegram_id=user_id, asin=asin, last_known_price=price)  # Add the product to the database
 
-    await context.bot.send_message(chat_id=update.effective_chat.id, text=f"Product with ASIN {asin} is now being tracked at ₹{price}.")
+    await context.bot.send_message(chat_id=update.effective_chat.id, text=f"The product https://www.amazon.in/dp/{asin} is now available at ₹{price}.")
     # Log the addition of the product
     logging.info(f"Product with ASIN {asin} added to the database for user {user_id}.")
     # Here you would add the logic to track the product using the ASIN
