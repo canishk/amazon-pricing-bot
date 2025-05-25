@@ -22,6 +22,11 @@ async def get_amazon_price(asin: str) -> float | None:
 
     try:
         response = requests.get(url, headers=headers, timeout=10)
+        logging.info(response.status_code)
+        if response.status_code != 200:
+            logging.error(f"[Scraper] Failed to fetch page for ASIN {asin}. Status code: {response.status_code}")
+            return None
+        logging.info(f"[Scraper] Response headers: {response.headers}")
         soup = BeautifulSoup(response.text, "lxml")
 
         price_tag = soup.select_one("span.a-price-whole")
